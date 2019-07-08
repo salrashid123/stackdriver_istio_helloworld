@@ -1,0 +1,185 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: myapp-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: myapp
+        version: v1
+    spec:
+      containers:
+      - name: myapp-container
+        image: gcr.io/mineral-minutia-820/fe_min:1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: GOOGLE_CLOUD_PROJECT
+          valueFrom:
+            configMapKeyRef:
+              name: settings
+              key: GOOGLE_CLOUD_PROJECT  
+        - name: BUCKET_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: settings
+              key: BUCKET_NAME
+        - name: GKE_CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: settings
+              key: GKE_CLUSTER_NAME                      
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_CONTAINER_NAME
+          value: myapp-container
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: myapp-v2
+spec:
+  replicas: 0
+  template:
+    metadata:
+      labels:
+        app: myapp
+        version: v2
+    spec:
+      containers:
+      - name: myapp-container
+        image: gcr.io/mineral-minutia-820/fe_min:2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: GOOGLE_CLOUD_PROJECT
+          valueFrom:
+            configMapKeyRef:
+              name: settings
+              key: GOOGLE_CLOUD_PROJECT
+        - name: BUCKET_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: settings
+              key: BUCKET_NAME
+        - name: GKE_CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: settings
+              key: GKE_CLUSTER_NAME              
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_CONTAINER_NAME
+          value: myapp-container                             
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: be-v1
+  labels:
+    type: be
+    version: v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: be
+        version: v1
+    spec:
+      containers:
+      - name: be-container
+        image: gcr.io/mineral-minutia-820/be_min:1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: GOOGLE_CLOUD_PROJECT
+          valueFrom:
+            configMapKeyRef:
+              name: settings
+              key: GOOGLE_CLOUD_PROJECT
+        - name: BUCKET_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: settings
+              key: BUCKET_NAME
+        - name: GKE_CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: settings
+              key: GKE_CLUSTER_NAME             
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_CONTAINER_NAME
+          value: be-container                 
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: be-v2
+  labels:
+    type: be
+    version: v2
+spec:
+  replicas: 0
+  template:
+    metadata:
+      labels:
+        app: be
+        version: v2
+    spec:
+      containers:
+      - name: be-container
+        image: gcr.io/mineral-minutia-820/be_min:2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: GOOGLE_CLOUD_PROJECT
+          valueFrom:
+            configMapKeyRef:
+              name: settings
+              key: GOOGLE_CLOUD_PROJECT
+        - name: BUCKET_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: settings
+              key: BUCKET_NAME
+        - name: GKE_CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: settings
+              key: GKE_CLUSTER_NAME  
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_CONTAINER_NAME
+          value: be-container            

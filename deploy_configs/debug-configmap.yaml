@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: debug-configmap
+data:
+  config: |-
+    {
+      "cloudRepo": {
+        "repoId": {
+          "projectRepoId": {
+            "projectId": "sd-test-246101", 
+            "repoName": "fe"
+          }
+        }, 
+        "revisionId": "9a3e4e58e20361aec788bfb4a66d514786be4774"
+      }
+    }

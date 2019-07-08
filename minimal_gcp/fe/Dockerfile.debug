@@ -1,0 +1,17 @@
+FROM golang:1.12 AS build
+WORKDIR /src/fe
+COPY go.mod go.sum ./
+RUN go mod download
+RUN go get -u cloud.google.com/go/cmd/go-cloud-debug-agent     
+COPY . .
+RUN CGO_ENABLED=0 go install -gcflags=all='-N -l'
+
+FROM gcr.io/distroless/base:debug
+ARG VER=0
+ENV VER $VER
+ENV DEBUG 1
+COPY --from=build /go/bin/go-cloud-debug-agent /bin/go-cloud-debug-agent
+COPY --from=build /go/bin/fe /bin/fe
+
+EXPOSE 8080
+ENTRYPOINT [ "/bin/go-cloud-debug-agent", "-sourcecontext", "/data/config/source-context.json",  "-appmodule", "fe", "-appversion", "1", "--", "/bin/fe"]

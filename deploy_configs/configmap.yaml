@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: settings
+data:
+  GOOGLE_CLOUD_PROJECT: "sd-test-246101"
+  BUCKET_NAME: "sdtest-404271327512"
+  GKE_CLUSTER_NAME: "gcp-demo"

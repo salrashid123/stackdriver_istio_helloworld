@@ -1,0 +1,174 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: external-google-api-storage
+spec:
+  hosts:
+  - storage.googleapis.com
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: storage-tls-routing
+spec:
+  hosts:
+  - storage.googleapis.com
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - storage.googleapis.com
+    route:
+    - destination:
+        host: storage.googleapis.com
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: external-google-api-monitoring
+spec:
+  hosts:
+  - monitoring.googleapis.com
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: monitoring-tls-routing
+spec:
+  hosts:
+  - monitoring.googleapis.com
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - monitoring.googleapis.com
+    route:
+    - destination:
+        host: monitoring.googleapis.com
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: external-google-api-cloudtrace
+spec:
+  hosts:
+  - cloudtrace.googleapis.com
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: cloudtrace-tls-routing
+spec:
+  hosts:
+  - cloudtrace.googleapis.com
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - cloudtrace.googleapis.com
+    route:
+    - destination:
+        host: cloudtrace.googleapis.com
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: external-google-api-clouderrorreporting
+spec:
+  hosts:
+  - clouderrorreporting.googleapis.com
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: clouderrorreporting-tls-routing
+spec:
+  hosts:
+  - clouderrorreporting.googleapis.com
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - clouderrorreporting.googleapis.com
+    route:
+    - destination:
+        host: clouderrorreporting.googleapis.com
+---
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: external-google-api-cloudprofiler
+spec:
+  hosts:
+  - cloudprofiler.googleapis.com
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: cloudprofiler-tls-routing
+spec:
+  hosts:
+  - cloudprofiler.googleapis.com
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - cloudprofiler.googleapis.com
+    route:
+    - destination:
+        host: cloudprofiler.googleapis.com
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: external-google-api-clouddebugger
+spec:
+  hosts:
+  - clouddebugger.googleapis.com
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: clouddebugger-tls-routing
+spec:
+  hosts:
+  - clouddebugger.googleapis.com
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - clouddebugger.googleapis.com
+    route:
+    - destination:
+        host: clouddebugger.googleapis.com
