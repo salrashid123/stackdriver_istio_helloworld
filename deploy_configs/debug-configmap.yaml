@@ -8,7 +8,7 @@ data:
       "cloudRepo": {
         "repoId": {
           "projectRepoId": {
-            "projectId": "sd-test-246101", 
+            "projectId": "your_project", 
             "repoName": "fe"
           }
         }, 

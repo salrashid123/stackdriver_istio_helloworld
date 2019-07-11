@@ -3,7 +3,7 @@
 
 This is a simplification of  [https://github.com/GoogleCloudPlatform/istio-samples/tree/master/istio-stackdriver](https://github.com/GoogleCloudPlatform/istio-samples/tree/master/istio-stackdriver) as a 'hello world' type application.  The istio sample for Stackdriver uses the [microservices-demo](https://github.com/GoogleCloudPlatform/microservices-demo) application.  The microservices demo is nice but includes a lot of things i don't find necessary to understand specific technologies.
 
-I find using a simple frontend->backend reference as instructive for me to learn so i setup 
+I find using a simple frontend->backend reference as instructive for me to learn so i setup
 - [https://github.com/salrashid123/istio_helloworld](https://github.com/salrashid123/istio_helloworld) sometime ago to learn istio.  Now i'm combining much of the same code to help explain various `StackDriver` technologies
 
 Specifically, this repo explores using the following on [GKE with Istio](https://cloud.google.com/istio/docs/istio-on-gke/overview)
@@ -34,7 +34,7 @@ You can pretty much pick and choose what you're interested in but using this rep
 	http.Handle("/backend", backendHandler)  // just makes an http call to the backend
 	http.Handle("/log", logHandler)  // logs stuff
 	http.Handle("/delay", delayHandler) // adds in an artifical delay of 3s by default.  Accepts ?delay=2000 to daly 2s,etc
-	http.Handle("/error", errorHandler)  // emits a custom error 
+	http.Handle("/error", errorHandler)  // emits a custom error
 	http.Handle("/debug", debugHandler)  // debug endpoint where you can setup a breakpoint (well, you can set one anywhere...)
 	http.Handle("/measure", trackVistHandler(measureHandler))  // emits a custom metric to opencensus-->stackdriver
 ```
@@ -110,7 +110,7 @@ Install GKE an the istio plugin.
 
 Note, the supported version here is pinned and confirmed working
 
-- [Supported Versions](https://cloud.google.com/istio/docs/istio-on-gke/installing#supported_gke_cluster_versions) 
+- [Supported Versions](https://cloud.google.com/istio/docs/istio-on-gke/installing#supported_gke_cluster_versions)
  --> Istio on GKE Version: 1.1.7-gke.0
 
 ```bash
@@ -189,11 +189,11 @@ Shows we allow by default
 ```
 
 so, runt he command here to enable registry:
-- `REGISTRY_ONLY`:
+- REGISTRY_ONLY:
    `kubectl get configmap istio -n istio-system -o yaml | sed 's/mode: REGISTRY_ONLY/mode: ALLOW_ANY/g' | kubectl replace -n istio-system -f -`
 
 (to revert it, you can always run)
-- `ALLOW_ANY`:
+- ALLOW_ANY:
   `kubectl get configmap istio -n istio-system -o yaml | sed 's/mode: ALLOW_ANY/mode: REGISTRY_ONLY/g' | kubectl replace -n istio-system -f -`
 
 ### (Optional) Setup Source Repo for Cloud Debugger
@@ -228,15 +228,15 @@ $  gcloud debug source gen-repo-info-file --output-directory /tmp/src_context/
 It will look somethign like:
 
 ```bash
-$ cat /tmp/src_context/source-context.json 
+$ cat /tmp/src_context/source-context.json
 {
   "cloudRepo": {
     "repoId": {
       "projectRepoId": {
-        "projectId": "$PROJECT", 
+        "projectId": "$PROJECT",
         "repoName": "fe"
       }
-    }, 
+    },
     "revisionId": "913f3cf0d8f36fd472a4538e9c8025d6df4e14ee"
   }
 }
@@ -256,10 +256,10 @@ data:
       "cloudRepo": {
         "repoId": {
           "projectRepoId": {
-            "projectId": "$PROJECT", 
+            "projectId": "$PROJECT",
             "repoName": "fe"
           }
-        }, 
+        },
         "revisionId": "913f3cf0d8f36fd472a4538e9c8025d6df4e14ee"
       }
     }
@@ -300,7 +300,7 @@ docker push  gcr.io/$PROJECT_ID/be_min:2
 
 We're finally ready to deploy the app
 
-- First get the `GATEWAY_IP` 
+- First get the `GATEWAY_IP`
 ```
 export GATEWAY_IP=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 echo $GATEWAY_IP
@@ -322,7 +322,7 @@ cd deploy_configs/
 
 kubectl label namespace default istio-injection=enabled
 
-kubectl apply -f istio-lb-certs.yaml 
+kubectl apply -f istio-lb-certs.yaml
 ```
 
 (wait a couple seconds)
@@ -331,9 +331,9 @@ kubectl apply -f istio-ingress-gateway.yaml
 kubectl apply -f istio-services.yaml
 kubectl apply -f configmap.yaml
 kubectl apply -f debug-configmap.yaml
-kubectl apply -f istio-deployment.yaml 
+kubectl apply -f istio-deployment.yaml
 ```
-The inital `istio-deployment.yaml` creates 
+The inital `istio-deployment.yaml` creates
 
 * `fe:v1`:  1 replica
 * `fe:v2`:  0 replica
@@ -352,7 +352,7 @@ The first test is to check traffic:
 kubectl apply -f istio-fev1-bev1.yaml
 ```
 
-- Check Frontend 
+- Check Frontend
 
 ```bash
 for i in {1..10}; do curl -sk -w "\n" -s http://$GATEWAY_IP/hostname &&  sleep 1; done
@@ -388,7 +388,7 @@ for i in {1..10}; do curl -sk -w "\n" -s http://$GATEWAY_IP/trace &&  sleep 1; d
 
 #### Deploy fev1v2->bev1, traffic split 50/50
 
-Now bump up the instance count for `fev2`. 
+Now bump up the instance count for `fev2`.
 
 - Edit `-deployment.yaml`, set `myapp-v2` --> 1 replica
 
@@ -521,7 +521,7 @@ metadata:
   name: be-virtualservice
 spec:
   gateways:
-  - mesh 
+  - mesh
   hosts:
   - be
   http:    
@@ -631,7 +631,7 @@ Now invoke the `/tracer` endpoint ont the frontend
 ```
  for i in {1..5}; do curl -sk -w "\n" -s http://$GATEWAY_IP/tracer &&  sleep 1; done
 ```
-  
+
 You'll see the full request flow described above
 
 - `user`-> `fev1v2` (start span, make gcs api call, make request call to backend)
@@ -710,7 +710,7 @@ The configuration below describes a custom metric called `demo/simplemeasure` th
   }
 ```
 
-We set this up in middleware 
+We set this up in middleware
 
 ```golang
 func trackVistHandler(next http.Handler) http.Handler {

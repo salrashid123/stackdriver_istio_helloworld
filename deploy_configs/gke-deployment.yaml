@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
       - name: myapp-container
-        image: gcr.io/mineral-minutia-820/fe_min:1
+        image: gcr.io/your_project/fe_min:1
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -21,7 +21,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: settings
-              key: GOOGLE_CLOUD_PROJECT  
+              key: GOOGLE_CLOUD_PROJECT
         - name: BUCKET_NAME
           valueFrom:
             configMapKeyRef:
@@ -31,7 +31,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: settings
-              key: GKE_CLUSTER_NAME                      
+              key: GKE_CLUSTER_NAME
         - name: MY_POD_NAMESPACE
           valueFrom:
             fieldRef:
@@ -57,7 +57,7 @@ spec:
     spec:
       containers:
       - name: myapp-container
-        image: gcr.io/mineral-minutia-820/fe_min:2
+        image: gcr.io/your_project/fe_min:2
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -76,7 +76,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: settings
-              key: GKE_CLUSTER_NAME              
+              key: GKE_CLUSTER_NAME
         - name: MY_POD_NAMESPACE
           valueFrom:
             fieldRef:
@@ -86,7 +86,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         - name: MY_CONTAINER_NAME
-          value: myapp-container                             
+          value: myapp-container
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -105,7 +105,7 @@ spec:
     spec:
       containers:
       - name: be-container
-        image: gcr.io/mineral-minutia-820/be_min:1
+        image: gcr.io/your_project/be_min:1
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -124,7 +124,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: settings
-              key: GKE_CLUSTER_NAME             
+              key: GKE_CLUSTER_NAME
         - name: MY_POD_NAMESPACE
           valueFrom:
             fieldRef:
@@ -134,7 +134,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         - name: MY_CONTAINER_NAME
-          value: be-container                 
+          value: be-container
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -153,7 +153,7 @@ spec:
     spec:
       containers:
       - name: be-container
-        image: gcr.io/mineral-minutia-820/be_min:2
+        image: gcr.io/your_project/be_min:2
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -172,7 +172,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: settings
-              key: GKE_CLUSTER_NAME  
+              key: GKE_CLUSTER_NAME
         - name: MY_POD_NAMESPACE
           valueFrom:
             fieldRef:
@@ -182,4 +182,4 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         - name: MY_CONTAINER_NAME
-          value: be-container            
+          value: be-container

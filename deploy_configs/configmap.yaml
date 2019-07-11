@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: settings
 data:
-  GOOGLE_CLOUD_PROJECT: "sd-test-246101"
-  BUCKET_NAME: "sdtest-404271327512"
+  GOOGLE_CLOUD_PROJECT: "your_project"
+  BUCKET_NAME: "sdtest-your_project_number"
   GKE_CLUSTER_NAME: "gcp-demo"
