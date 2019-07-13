@@ -28,22 +28,22 @@ You can pretty much pick and choose what you're interested in but using this rep
 - Frontend (`fe`):
 
 ```golang
-	http.Handle("/", rootHandler)   // does nothing
-	http.Handle("/hostname", hostnameHander)  // emits back the hostname of the pod that got the request
-	http.Handle("/tracer", traceHandler)  // starts tracing requests to gcs and makes a call to the backend /tracer endpoint
-	http.Handle("/backend", backendHandler)  // just makes an http call to the backend
-	http.Handle("/log", logHandler)  // logs stuff
-	http.Handle("/delay", delayHandler) // adds in an artifical delay of 3s by default.  Accepts ?delay=2000 to daly 2s,etc
-	http.Handle("/error", errorHandler)  // emits a custom error
-	http.Handle("/debug", debugHandler)  // debug endpoint where you can setup a breakpoint (well, you can set one anywhere...)
-	http.Handle("/measure", trackVistHandler(measureHandler))  // emits a custom metric to opencensus-->stackdriver
+http.Handle("/", rootHandler)   // does nothing
+http.Handle("/hostname", hostnameHander)  // emits back the hostname of the pod that got the request
+http.Handle("/tracer", traceHandler)  // starts tracing requests to gcs and makes a call to the backend /tracer endpoint
+http.Handle("/backend", backendHandler)  // just makes an http call to the backend
+http.Handle("/log", logHandler)  // logs stuff
+http.Handle("/delay", delayHandler) // adds in an artifical delay of 3s by default.  Accepts ?delay=2000 to daly 2s,etc
+http.Handle("/error", errorHandler)  // emits a custom error
+http.Handle("/debug", debugHandler)  // debug endpoint where you can setup a breakpoint (well, you can set one anywhere...)
+http.Handle("/measure", trackVistHandler(measureHandler))  // emits a custom metric to opencensus-->stackdriver
 ```
 
 - Backend (`be`):
 
 ```golang
-	http.HandleFunc("/tracer", tracer)  // accepts an inbound trace context from frontend, used context to make a gcs call and then return
-	http.HandleFunc("/backend", backend) // just responds, ok
+http.HandleFunc("/tracer", tracer)  // accepts an inbound trace context from frontend, used context to make a gcs call and then return
+http.HandleFunc("/backend", backend) // just responds, ok
 ```
 
 ## Setup
@@ -675,6 +675,31 @@ If you want to propagate a trace from a frontend to backend, you need to bake in
 	hreq = hreq.WithContext(cc)
 	rr, err := client.Do(hreq)
 ```
+
+#### Trace->Log Linking
+
+You can also link a given trace directly with a logEntry.  Unfortunately, you need to emit logs using the Cloud Logging API and not stdout as described in this repo.   If you instead emitted logs and specified the `trace` field in the [LogEntry](https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry) proto as shown here
+
+```golang
+  ctx := span.SpanContext()
+  tr := ctx.TraceID.String()
+  lg := client.Logger("spannerlab")
+  trace := fmt.Sprintf("projects/%s/traces/%s", projectId, tr)
+  lg.Log(logging.Entry{
+  Severity: severity,
+  Payload:  fmt.Sprintf(format, v...),
+			Trace:    trace,
+			SpanID:   ctx.SpanID.String(),
+		})
+```
+
+You can see the log lines for a given trace
+
+![images/trace_logs.png](images/trace_logs.png)
+
+#### Parent-Child Log Linking
+
+Its convenient to display all the log lines associated with a single request as one grouped log.  That is, if you emit N log lines within one httpRequest, you can 'expand' the parent http request log entry and see the subentries.   This is not available with the defualt logs to stdout on GKE nor is it available by default with the LoggingAPI.  Instead, you need to carefully construct the log entries in a specific sequence where the parent includes the `httpRequest` proto and child logs are linked with the traceID.  For more information, see [Correlating Log Lines on GCP](https://medium.com/google-cloud/combining-correlated-log-lines-in-google-stackdriver-dd23284aeb29)
 
 ### Metrics
 
