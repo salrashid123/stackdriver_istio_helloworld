@@ -152,7 +152,7 @@ Start UI (username/password is `admin`/`admin`)
 kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=kiali -o jsonpath='{.items[0].metadata.name}') 20001:20001
 ```
 
-#### Add Stacdriver Trace
+#### Add Stackdriver Trace
 
 Add on configuration to gke+istio for [enhanced stackdriver tracing](https://cloud.google.com/istio/docs/istio-on-gke/installing#tracing_and_logging):
 
@@ -225,7 +225,7 @@ Now acquire the source context file
 $  gcloud debug source gen-repo-info-file --output-directory /tmp/src_context/
 ```
 
-It will look somethign like:
+It will look something like:
 
 ```bash
 $ cat /tmp/src_context/source-context.json
@@ -699,7 +699,7 @@ You can see the log lines for a given trace
 
 #### Parent-Child Log Linking
 
-Its convenient to display all the log lines associated with a single request as one grouped log.  That is, if you emit N log lines within one httpRequest, you can 'expand' the parent http request log entry and see the subentries.   This is not available with the defualt logs to stdout on GKE nor is it available by default with the LoggingAPI.  Instead, you need to carefully construct the log entries in a specific sequence where the parent includes the `httpRequest` proto and child logs are linked with the traceID.  For more information, see [Correlating Log Lines on GCP](https://medium.com/google-cloud/combining-correlated-log-lines-in-google-stackdriver-dd23284aeb29)
+Its convenient to display all the log lines associated with a single request as one grouped log.  That is, if you emit N log lines within one httpRequest, you can 'expand' the parent http request log entry and see the subentries.   This is not available with the default logs to stdout on GKE nor is it available by default with the LoggingAPI.  Instead, you need to carefully construct the log entries in a specific sequence where the parent includes the `httpRequest` proto and child logs are linked with the traceID.  For more information, see [Correlating Log Lines on GCP](https://medium.com/google-cloud/combining-correlated-log-lines-in-google-stackdriver-dd23284aeb29)
 
 ### Metrics
 
@@ -719,7 +719,7 @@ More more details on alerting based on Istio and SD metrics, please see the [ist
 
 #### Custom Metrics
 
-The sample here uses Opencensus libraries to emit metrics as well.  What this allows you do to is to emit any arbitrary _custom metric_ to any target supported.  The exporet we use here is ofcourse Stackdriver.
+The sample here uses Opencensus libraries to emit metrics as well.  What this allows you do to is to emit any arbitrary _custom metric_ to any target supported.  The exporter we use here is ofcourse Stackdriver.
 
 The configuration below describes a custom metric called `demo/simplemeasure` that has a dimension of `path` and describes a simple counter
 
@@ -758,9 +758,9 @@ that intercepts every request to the `/measure` endpoint
 http.Handle("/measure", trackVistHandler(measureHandler))
 ```
 
-So..what does that custom metric do?  Well, its a trivial example:  all it does is increments a counter for every request to the `/measure` endpoint (or more accurately, any endpoint but we only enabled the interception for `/measure`).  The metric essentially says "create a custom metric that counts something and allow me to filter it on an label "path".   So if i enabled any other endoint like `http.Handle("/backend", trackVistHandler(backendHandler))`, i would end up with a custom metric where i could see this counter and then filter it on the `path` (since i emit `r.URL.Path` as its label value)
+So..what does that custom metric do?  Well, its a trivial example:  all it does is increments a counter for every request to the `/measure` endpoint (or more accurately, any endpoint but we only enabled the interception for `/measure`).  The metric essentially says "create a custom metric that counts something and allow me to filter it on an label "path".   So if i enabled any other endpoint like `http.Handle("/backend", trackVistHandler(backendHandler))`, i would end up with a custom metric where i could see this counter and then filter it on the `path` (since i emit `r.URL.Path` as its label value)
 
-Using a couner for visits to an endpoint is contrived (you could just use builtin metrics) but this demonstrates any custom attribute you can emit
+Using a counter for visits to an endpoint is contrived (you could just use builtin metrics) but this demonstrates any custom attribute you can emit
 
 * listing custom metrics
 Now that we have custom metric defined, you can list it using the [monitoring.projects.metricDescriptors.list](https://developers.google.com/apis-explorer/#p/monitoring/v3/monitoring.projects.metricDescriptors.list?name=projects%252FYOURPROJECT0&_h=2&) endpoint.
@@ -871,7 +871,7 @@ Which you can use to filter on cpu,heap, thread and other aspects of your runnin
 
 Cloud debugger allows you to inspect and inject log lines into your code.  It does *not* stop execution!
 
-You will have to enable instrumentation on startup so its use isn't recommended on production traffic (only small portion, if its really nnecessary)
+You will have to enable instrumentation on startup so its use isn't recommended on production traffic (only small portion, if its really necessary)
 
 * as of `7/8/19`, cloud debugger portion of this repo is not working due to the way profiler/debugger starts up on Istio issue#[119](https://github.com/GoogleCloudPlatform/microservices-demo/issues/199#issuecomment-493283992)
 
