@@ -19,7 +19,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
-	applog "github.com/salrashid123/minimal_gcp/applog"
+	applog "github.com/salrashid123/stackdriver_istio_helloworld/minimal_gcp/applog"
 )
 
 var (

@@ -1,4 +1,4 @@
-module github.com/salrashid123/minimal_gcp/applog
+module github.com/salrashid123/stackdriver_istio_helloworld/minimal_gcp/applog
 
 go 1.13
 
