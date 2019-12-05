@@ -18,6 +18,8 @@ import (
 	"go.opencensus.io/trace"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+
+	applog "github.com/salrashid123/minimal_gcp/applog"
 )
 
 var (
@@ -40,6 +42,10 @@ func tracer(w http.ResponseWriter, r *http.Request) {
 
 	// Start Span
 	_, sleepSpan := trace.StartSpan(ctx, "start=start_sleep_backend")
+
+	sctx, sleepSpan := trace.StartSpan(ctx, "start=sleep_for_no_reason")
+
+	applog.Printf(sctx, "somewhere in the BACKEND span...")
 
 	if version == "2" {
 		log.Infof("...just doing nothing for... 1000ms")
@@ -92,6 +98,9 @@ func tracer(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
+	applog.Initialize(os.Getenv("GOOGLE_CLOUD_PROJECT"))
+	defer applog.Close()
 
 	// Start Logging to stdout as JSON
 	log.SetFormatter(&log.JSONFormatter{

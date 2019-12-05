@@ -27,6 +27,8 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
+	applog "github.com/salrashid123/minimal_gcp/applog"
+
 	log "github.com/sirupsen/logrus"
 
 	"go.opencensus.io/stats"
@@ -157,7 +159,7 @@ func backend(w http.ResponseWriter, r *http.Request) {
 			// Use Google Cloud propagation format.
 			//Propagation: &propagation.HTTPFormat{},
 		},
-	}	
+	}
 	rr, err := client.Do(hreq)
 	if err != nil {
 		log.Printf("Unable to make backend requestt: %v", err)
@@ -188,7 +190,10 @@ func tracer(w http.ResponseWriter, r *http.Request) {
 	//client := &http.Client{Transport: &ochttp.Transport{}}
 
 	// start span
-	_, sleepSpan := trace.StartSpan(ctx, "start=sleep_for_no_reason")
+	sctx, sleepSpan := trace.StartSpan(ctx, "start=sleep_for_no_reason")
+
+	applog.Printf(sctx, "somewhere in the main span...")
+
 	time.Sleep(200 * time.Millisecond)
 	sleepSpan.End()
 	// end span
@@ -271,6 +276,9 @@ func tracer(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	ctx := context.Background()
+
+	applog.Initialize(os.Getenv("GOOGLE_CLOUD_PROJECT"))
+	defer applog.Close()
 
 	// Start Logging to stdout as JSON
 	log.SetFormatter(&log.JSONFormatter{

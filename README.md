@@ -697,6 +697,40 @@ You can see the log lines for a given trace
 
 ![images/trace_logs.png](images/trace_logs.png)
 
+
+The snippet above can be wrapped inside a function as shown in `applog.go` contained within this repo:
+
+```golang
+import (
+  applog "github.com/salrashid123/minimal_gcp/applog"
+)
+
+...
+...
+	applog.Initialize(os.Getenv("GOOGLE_CLOUD_PROJECT"))
+  defer applog.Close()
+  
+	// Start Span
+	_, sleepSpan := trace.StartSpan(ctx, "start=start_sleep_backend")
+
+	sctx, sleepSpan := trace.StartSpan(ctx, "start=sleep_for_no_reason")
+
+	applog.Printf(sctx, "somewhere in the BACKEND span...")
+
+	if version == "2" {
+		log.Infof("...just doing nothing for... 1000ms")
+		time.Sleep(time.Duration(1000) * time.Millisecond)
+	}
+	sleepSpan.End()
+	// End Span
+```
+
+As another example, a `/tracer` request emits an log line within a span in _both_ the frontend and backend application.  The net result is the "View" link for the given trace shows both the log lines emitted within that trace:
+
+![images/trace_log_list.png](images/trace_log_list.png)
+
+![images/trace_log_details.png](images/trace_log_details.png)
+
 #### Parent-Child Log Linking
 
 Its convenient to display all the log lines associated with a single request as one grouped log.  That is, if you emit N log lines within one httpRequest, you can 'expand' the parent http request log entry and see the subentries.   This is not available with the default logs to stdout on GKE nor is it available by default with the LoggingAPI.  Instead, you need to carefully construct the log entries in a specific sequence where the parent includes the `httpRequest` proto and child logs are linked with the traceID.  For more information, see [Correlating Log Lines on GCP](https://medium.com/google-cloud/combining-correlated-log-lines-in-google-stackdriver-dd23284aeb29)
